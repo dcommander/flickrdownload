@@ -1,5 +1,6 @@
 /*
   FlickrDownload - Copyright(C) 2010 Brian Masney <masneyb@onstation.org>.
+                 - Copyright(C) 2015 D. R. Commander.
   If you have any questions, comments, or suggestions about this program, please
   feel free to email them to me. You can always find out the latest news about
   FlickrDownload from my website at http://www.onstation.org/flickrdownload/
@@ -94,7 +95,8 @@ public class Sets {
 
 	public void downloadAllPhotos() throws Exception {
 		for (AbstractSet set : this.sets) {
-			if (configuration.limitDownloadsToSets.size() > 0 && !configuration.limitDownloadsToSets.contains(set.getSetId()))
+			if (configuration.limitDownloadsToSets.size() > 0 && !configuration.limitDownloadsToSets.contains(set.getSetId()) &&
+			    !configuration.limitDownloadsToSets.contains(set.getSetTitle()))
 				continue;
 
 			File setDir = set.getSetDirectory();
@@ -102,7 +104,7 @@ public class Sets {
 
 			File setXmlFilename = set.getSetXmlFilename();
 			if (Sets.this.configuration.partialDownloads && setXmlFilename.exists() && Stats.getMediaCount(setXmlFilename, set.getSetId()) == set.getMediaCount()) {
-				Logger.getLogger(getClass()).info(String.format("Skipping the download of set %s - %s", set.getSetId(), set.getSetTitle()));
+				Logger.getLogger(getClass()).info(String.format("Skipping the download of set %s - %s", set.getRealSetId(), set.getSetTitle()));
 				continue;
 			}
 

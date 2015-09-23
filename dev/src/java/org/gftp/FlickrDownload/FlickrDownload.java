@@ -1,5 +1,6 @@
 /*
   FlickrDownload - Copyright(C) 2010-2011 Brian Masney <masneyb@onstation.org>.
+                 - Copyright(C) 2015 D. R. Commander.
   If you have any questions, comments, or suggestions about this program, please
   feel free to email them to me. You can always find out the latest news about
   FlickrDownload from my website at http://www.onstation.org/flickrdownload/
@@ -75,6 +76,9 @@ public class FlickrDownload {
 
 		@Option(name="--onlyOriginals", required=false)
 		public boolean onlyOriginals = false;
+
+		@Option(name="--useTitles", required=false)
+		public boolean useTitles = false;
 	}
 
 	private static File getToplevelXmlFilename(File photosBaseDirectory) {
@@ -142,6 +146,11 @@ public class FlickrDownload {
 		return "http://www.onstation.org/flickrdownload/";
 	}
 
+	public static String sanitizeTitle(String title) {
+		String sanitized = title.replaceAll("[^a-zA-Z0-9_\\-\\.\\ \\+]", "_").trim();
+		return sanitized;
+	}
+
 	private static void usage(CmdLineParser parser, String error) {
 		System.err.println(error);
 		System.err.print("usage: FlickrDownload ");
@@ -205,6 +214,7 @@ public class FlickrDownload {
 
         configuration.onlyData = values.onlyData;
         configuration.onlyOriginals = values.onlyOriginals;
+		configuration.useTitles = values.useTitles;
 
 		configuration.buddyIconFilename = new File(configuration.photosBaseDirectory, configuration.photosUser.getRealName() + ".jpg");
 		if (!configuration.onlyData && (configuration.alwaysDownloadBuddyIcon || !configuration.buddyIconFilename.exists()))

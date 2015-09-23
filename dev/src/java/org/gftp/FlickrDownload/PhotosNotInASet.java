@@ -1,5 +1,6 @@
 /*
   FlickrDownload - Copyright(C) 2011 Brian Masney <masneyb@onstation.org>.
+                 - Copyright(C) 2015 D. R. Commander.
   If you have any questions, comments, or suggestions about this program, please
   feel free to email them to me. You can always find out the latest news about
   FlickrDownload from my website at http://www.onstation.org/flickrdownload/
@@ -27,6 +28,7 @@ import com.flickr4java.flickr.photos.PhotoList;
 public class PhotosNotInASet extends AbstractSet {
 	private Set<Photo> photoSet = new LinkedHashSet<Photo>();
 	private String primaryPhotoId;
+	private String primaryPhotoFilename;
 	private String primaryPhotoSmallSquareUrl;
 
 	public PhotosNotInASet(Configuration configuration, Flickr flickr) throws IOException, SAXException, FlickrException {
@@ -48,6 +50,11 @@ public class PhotosNotInASet extends AbstractSet {
 				Photo photo = (Photo) photos.get(i);
 				if (this.primaryPhotoId == null) {
 					this.primaryPhotoId = photo.getId();
+					if (configuration.useTitles)
+						this.primaryPhotoFilename =
+							FlickrDownload.sanitizeTitle(photo.getTitle());
+					else
+						this.primaryPhotoFilename = photo.getId();
 					this.primaryPhotoSmallSquareUrl = photo.getSmallSquareUrl();
 				}
 
@@ -80,6 +87,11 @@ public class PhotosNotInASet extends AbstractSet {
 	}
 
 	@Override
+	protected String getPrimaryPhotoFilename() {
+		return this.primaryPhotoFilename;
+	}
+
+	@Override
 	protected String getPrimaryPhotoSmallSquareUrl() {
 		return this.primaryPhotoSmallSquareUrl;
 	}
@@ -87,6 +99,11 @@ public class PhotosNotInASet extends AbstractSet {
 	@Override
 	protected String getSetDescription() {
 		return "";
+	}
+
+	@Override
+	protected String getRealSetId() {
+		return "photos-not-in-a-set";
 	}
 
 	@Override

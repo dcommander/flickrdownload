@@ -1,5 +1,6 @@
 /*
   FlickrDownload - Copyright(C) 2010-2011 Brian Masney <masneyb@onstation.org>.
+                 - Copyright(C) 2015 D. R. Commander.
   If you have any questions, comments, or suggestions about this program, please
   feel free to email them to me. You can always find out the latest news about
   FlickrDownload from my website at http://www.onstation.org/flickrdownload/
@@ -44,7 +45,7 @@ public abstract class AbstractSet {
 	public static String LARGE_PHOTO_DESCRIPTION = "Large";
 	public static String ORIGINAL_MEDIA_DESCRIPTION = "Original";
 
-	private Configuration configuration;
+	protected Configuration configuration;
 	private Collection<String> expectedFiles = new HashSet<String>(Arrays.asList(
 			SET_XML_FILENAME, 
 			Sets.SET_THUMBNAIL_FILENAME,
@@ -56,9 +57,11 @@ public abstract class AbstractSet {
 
 	protected abstract int getMediaCount();
 	protected abstract String getSetId();
+	protected abstract String getRealSetId();
 	protected abstract String getSetTitle();
 	protected abstract String getSetDescription();
 	protected abstract String getPrimaryPhotoId();
+	protected abstract String getPrimaryPhotoFilename();
 	protected abstract String getPrimaryPhotoSmallSquareUrl();
 	protected abstract void download(Flickr flickr, Element setXml) throws IOException, SAXException, FlickrException;
 
@@ -77,7 +80,7 @@ public abstract class AbstractSet {
 	}
 
 	public Element createToplevelXml() throws JDOMException, IOException {
-		String setThumbnailBaseFilename = String.format("%s_thumb_sq.jpg", getPrimaryPhotoId());
+		String setThumbnailBaseFilename = String.format("%s_thumb_sq.jpg", getPrimaryPhotoFilename());
 		File setDir = new File(this.configuration.photosBaseDirectory, getSetId());
 		return new Element("set")
 				.addContent(new Element("id").setText(getSetId()))
@@ -131,9 +134,16 @@ public abstract class AbstractSet {
 
             String originalUrl = null;
             String originalBaseFilename;
+            String photoName;
+            String orig = "_orig";
+            if (this.configuration.useTitles) {
+            	photoName = FlickrDownload.sanitizeTitle(photo.getTitle());
+            	orig = "";
+            } else
+            	photoName = photo.getId();
             if (photo.getMedia().equals("video")) {
             	originalUrl = getOriginalVideoUrl(flickr, photo.getId());
-            	originalBaseFilename = String.format("%s_orig.%s", photo.getId(), IOUtils.getVideoExtension(originalUrl));
+            	originalBaseFilename = String.format("%s%s.%s", photoName, orig, IOUtils.getVideoExtension(originalUrl));
             }
             else {
             	try {
@@ -142,16 +152,16 @@ public abstract class AbstractSet {
             	catch (FlickrException e) {
             		// NOOP - original URL not available
             	}
-        		originalBaseFilename = String.format("%s_orig.%s", 
-        				photo.getId(), 
+        		originalBaseFilename = String.format("%s%s.%s",
+        				photoName, orig,
         				photo.getOriginalFormat());
             }
 
-            String smallSquareBaseFilename = String.format("%s_thumb_sq.jpg", photo.getId());
-            String mediumBaseFilename = String.format("%s_med.jpg", photo.getId());
-            String largeBaseFilename = String.format("%s_large.jpg", photo.getId());
+            String smallSquareBaseFilename = String.format("%s_thumb_sq.jpg", photoName);
+            String mediumBaseFilename = String.format("%s_med.jpg", photoName);
+            String largeBaseFilename = String.format("%s_large.jpg", photoName);
 
-    		this.expectedFiles.add(String.format("%s.html", photo.getId()));
+    		this.expectedFiles.add(String.format("%s.html", photoName));
     		this.expectedFiles.add(smallSquareBaseFilename);
     		this.expectedFiles.add(mediumBaseFilename);
     		this.expectedFiles.add(largeBaseFilename);
@@ -160,7 +170,7 @@ public abstract class AbstractSet {
             GeoData geoData = photo.getGeoData();
             Element media = new Element("media")
             	.setAttribute("type", photo.getMedia())
-            	.addContent(new Element("id").setText(photo.getId()))
+            	.addContent(new Element("id").setText(photoName))
             	.addContent(new Element("title").setText(photo.getTitle()))
             	.addContent(new Element("description").setText(photo.getDescription()))
     			.addContent(new Element("publicUrl").setText(photo.getUrl()));
@@ -227,7 +237,7 @@ public abstract class AbstractSet {
 
 	public Element createSetlevelXml(Flickr flickr) throws IOException, SAXException, FlickrException {
 		Logger.getLogger(getClass()).info(String.format("Downloading information for set %s - %s",
-				getSetId(), getSetTitle()));
+				getRealSetId(), getSetTitle()));
 
 		Element setXml = new Element("set")
 				.addContent(XmlUtils.createApplicationXml())

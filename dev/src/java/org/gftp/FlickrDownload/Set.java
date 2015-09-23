@@ -1,5 +1,6 @@
 /*
   FlickrDownload - Copyright(C) 2010-2011 Brian Masney <masneyb@onstation.org>.
+                 - Copyright(C) 2015 D. R. Commander.
   If you have any questions, comments, or suggestions about this program, please
   feel free to email them to me. You can always find out the latest news about
   FlickrDownload from my website at http://www.onstation.org/flickrdownload/
@@ -38,7 +39,7 @@ public class Set extends AbstractSet {
 		int retrievedPhotos = 0;
 		int totalPhotos = 0;
 		do {
-			PhotoList photos = flickr.getPhotosetsInterface().getPhotos(getSetId(), 500, pageNum++);
+			PhotoList photos = flickr.getPhotosetsInterface().getPhotos(getRealSetId(), 500, pageNum++);
 
 			totalPhotos = photos.getTotal();
 
@@ -57,6 +58,15 @@ public class Set extends AbstractSet {
 	}
 
 	@Override
+	protected String getPrimaryPhotoFilename() {
+		String title = this.set.getPrimaryPhoto().getTitle();
+		if (configuration.useTitles && title != null)
+			return FlickrDownload.sanitizeTitle(title);
+		else
+			return this.set.getPrimaryPhoto().getId();
+	}
+
+	@Override
 	protected String getPrimaryPhotoSmallSquareUrl() {
 		return this.set.getPrimaryPhoto().getSmallSquareUrl();
 	}
@@ -67,8 +77,16 @@ public class Set extends AbstractSet {
 	}
 
 	@Override
-	protected String getSetId() {
+	protected String getRealSetId() {
 		return this.set.getId();
+	}
+
+	@Override
+	protected String getSetId() {
+		if (configuration.useTitles)
+			return FlickrDownload.sanitizeTitle(getSetTitle());
+		else
+			return this.set.getId();
 	}
 
 	@Override
