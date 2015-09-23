@@ -79,6 +79,9 @@ public class FlickrDownload {
 
 		@Option(name="--useTitles", required=false)
 		public boolean useTitles = false;
+
+		@Option(name="--checkSize", required=false)
+		public boolean checkSize = false;
 	}
 
 	private static File getToplevelXmlFilename(File photosBaseDirectory) {
@@ -215,6 +218,7 @@ public class FlickrDownload {
         configuration.onlyData = values.onlyData;
         configuration.onlyOriginals = values.onlyOriginals;
 		configuration.useTitles = values.useTitles;
+		configuration.checkSize = values.checkSize;
 
 		configuration.buddyIconFilename = new File(configuration.photosBaseDirectory, configuration.photosUser.getRealName() + ".jpg");
 		if (!configuration.onlyData && (configuration.alwaysDownloadBuddyIcon || !configuration.buddyIconFilename.exists()))

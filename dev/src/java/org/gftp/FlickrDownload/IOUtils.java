@@ -1,5 +1,6 @@
 /*
   FlickrDownload - Copyright(C) 2010 Brian Masney <masneyb@onstation.org>.
+                 - Copyright(C) 2015 D. R. Commander.
   If you have any questions, comments, or suggestions about this program, please
   feel free to email them to me. You can always find out the latest news about
   FlickrDownload from my website at http://www.onstation.org/flickrdownload/
@@ -72,6 +73,29 @@ public class IOUtils {
 			if (istr != null)
 				istr.close();
 		}
+	}
+
+	public static boolean sameSize(String url, File destFile) throws IOException, HTTPException {
+		long localFileSize = destFile.length(), remoteFileSize = -1;
+
+		HttpClient client = new HttpClient();
+		HeadMethod head = new HeadMethod(url);
+		head.getParams().setCookiePolicy(CookiePolicy.IGNORE_COOKIES);
+		int code = client.executeMethod(head);
+		if (code >= 200 && code < 300) {
+			remoteFileSize = head.getResponseContentLength();
+			if (localFileSize == remoteFileSize) {
+				Logger.getLogger(IOUtils.class).debug(String.format("%s and %s are the same size", destFile.getName(), url));
+				return true;
+      }
+		}
+		else {
+			Logger.getLogger(IOUtils.class).warn("Got HTTP response code " + code + " when trying to check size of " + url);
+			return false;
+		}
+
+		Logger.getLogger(IOUtils.class).debug(String.format("Local file size %d != remote file size %d", localFileSize, remoteFileSize));
+		return false;
 	}
 
 	public static void downloadUrl(String url, File destFile) throws IOException, HTTPException {

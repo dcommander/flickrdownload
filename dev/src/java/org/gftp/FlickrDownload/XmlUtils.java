@@ -1,5 +1,6 @@
 /*
   FlickrDownload - Copyright(C) 2010 Brian Masney <masneyb@onstation.org>.
+                 - Copyright(C) 2015 D. R. Commander.
   If you have any questions, comments, or suggestions about this program, please
   feel free to email them to me. You can always find out the latest news about
   FlickrDownload from my website at http://www.onstation.org/flickrdownload/
@@ -104,8 +105,11 @@ public class XmlUtils {
 		return element;
 	}
 	
-	public static Element downloadMediaAndCreateElement(String elementName, File localFilename, String displayLocalFilename, String remoteUrl, boolean forceDownload, Configuration configuration) throws IOException {
-		if (!configuration.onlyData && remoteUrl != null && (!localFilename.exists() || forceDownload))
+	public static Element downloadMediaAndCreateElement(String elementName, File localFilename, String displayLocalFilename, String remoteUrl, boolean forceDownload, boolean checkSize, Configuration configuration) throws IOException {
+		if (!configuration.onlyData && remoteUrl != null &&
+		     (!localFilename.exists() ||
+		       (checkSize && !IOUtils.sameSize(remoteUrl, localFilename)) ||
+		       forceDownload))
 			IOUtils.downloadUrl(remoteUrl, localFilename);
 
 		return createMediaElement(elementName, localFilename, displayLocalFilename, remoteUrl);

@@ -38,6 +38,7 @@ public class Configuration {
 	public boolean onlyData = false;
 	public boolean onlyOriginals = false;
 	public boolean useTitles = false;
+	public boolean checkSize = false;
 	public String addExtensionToUnknownFiles;
 	public List<String> limitDownloadsToSets;
 	public Auth auth;
