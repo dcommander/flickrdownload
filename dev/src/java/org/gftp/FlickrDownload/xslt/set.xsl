@@ -143,6 +143,20 @@
 
             <div class="date_taken">Date Taken: <xsl:value-of select="media[$pos + 0]/dates/taken/@raw"/></div>
 
+            <xsl:if test="media[$pos + 0]/geodata and media[$pos + 0]/geodata/@latitude != '' and media[$pos + 0]/geodata/@longitude != ''">
+              <div class="location">
+                Coordinates:
+                <xsl:value-of select="media[$pos + 0]/geodata/@latitude"/>, <xsl:value-of select="media[$pos + 0]/geodata/@longitude"/>
+                <xsl:if test="media[$pos + 0]/geodata/@accuracy">
+                  (Accuracy = <xsl:value-of select="media[$pos + 0]/geodata/@accuracy"/>)
+                </xsl:if>
+              </div>
+              <div class="location">
+                Map links:
+                [<a href="http://maps.google.com/maps?ll={media[$pos + 0]/geodata/@latitude},{media[$pos + 0]/geodata/@longitude}&amp;t=h&amp;z={media[$pos + 0]/geodata/@accuracy}" target="_blank">Google</a>]
+              </div>
+            </xsl:if>
+
             <div class="download_links">
               <div class="download_links_header">Download</div>
               <xsl:for-each select="media[$pos + 0]/image[@localFilename != '']">
