@@ -23,6 +23,16 @@ white-space: pre-wrap; /* CSS 2.1 */
 white-space: pre-line; /* CSS 3 */
 word-wrap: break-word; /* IE */
 }
+div.set_description {
+padding-top: 10px;
+white-space: pre; /* CSS2 */
+white-space: -moz-pre-wrap; /* Mozilla */
+white-space: -o-pre-wrap; /* Opera 7 */
+white-space: -pre-wrap; /* Opera 4-6 */
+white-space: pre-wrap; /* CSS 2.1 */
+white-space: pre-line; /* CSS 3 */
+word-wrap: break-word; /* IE */
+}
 img.set_thumb_photo {
 display: block;
 margin-left: auto;

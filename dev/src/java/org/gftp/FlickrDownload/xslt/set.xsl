@@ -41,7 +41,7 @@
               </a>
     
               <xsl:if test="description != ''">
-                <div class="set_description"><xsl:value-of select="description"/></div>
+                <div class="set_description"><xsl:value-of select="description" disable-output-escaping="yes"/></div>
               </xsl:if>
             </td>
             <td class="set_thumbnails_other" valign="top">
