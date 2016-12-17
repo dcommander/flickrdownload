@@ -114,7 +114,7 @@
               </td>
               </tr>
               <tr>
-                <td colspan="2" class="view_on_flickr"><a href="{media[$pos + 1]/publicUrl}">View on Flickr</a></td>
+                <td colspan="2" class="view_on_flickr"><a href="index.html">Back to Index</a></td>
               </tr>
             </table>
 
@@ -161,7 +161,7 @@
               <div class="download_links_header">Download</div>
               <xsl:for-each select="media[$pos + 0]/image[@localFilename != '']">
                 <div class="download_link">
-                  <a href="{@localFilename}"><xsl:value-of select="@type"/></a>
+                  <a href="{@localFilename}" target="_blank"><xsl:value-of select="@type"/></a>
                   <xsl:text> - </xsl:text>
                   <xsl:call-template name="pretty_file_size">
                     <xsl:with-param name="size" select="@size"/>
@@ -175,6 +175,9 @@
                   </xsl:if>
                 </div>
               </xsl:for-each>
+              <div class="download_link">
+                <a href="{media[$pos + 0]/publicUrl}" target="_blank">View on Flickr</a>
+              </div>
             </div>
 
             <xsl:if test="media[$pos + 0]/tags/tag">
