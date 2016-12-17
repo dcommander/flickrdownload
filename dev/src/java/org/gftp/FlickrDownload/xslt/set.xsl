@@ -84,9 +84,27 @@
           <xsl:with-param name="baseDir">..</xsl:with-param>
         </xsl:apply-templates>
 
+        <xsl:if test="media[$pos + 0]/notes and count(media[$pos + 0]/notes/*) &gt; 0">
+          <map id="notes" name="notes">
+            <xsl:for-each select="media[$pos + 0]/notes/note">
+              <area coords="{@x},{@y},{@x+@width},{@y+@height}" href="{image[@type='Original']/@localFilename}" title="[{@author}] {@text}" alt="[{@author}] {@text}"/>
+            </xsl:for-each>
+            <area coords="0,0,1024,768" href="{image[@type='Original']/@localFilename}"/>
+          </map>
+        </xsl:if>
+
         <table class="photo_table">
           <td class="photo_side" valign="top">
-            <a href="{image[@type='Original']/@localFilename}"><img class="medium_photo" src="{media[$pos + 0]/image[@type='Medium']/@localFilename}"/></a>
+            <a href="{image[@type='Original']/@localFilename}">
+              <xsl:choose>
+                <xsl:when test="media[$pos + 0]/notes and count(media[$pos + 0]/notes/*) &gt; 0">
+                  <img class="medium_photo" usemap="#notes" src="{media[$pos + 0]/image[@type='Medium']/@localFilename}"/>
+                </xsl:when>
+                <xsl:otherwise>
+                  <img class="medium_photo" src="{media[$pos + 0]/image[@type='Medium']/@localFilename}"/>
+                </xsl:otherwise>
+              </xsl:choose>
+            </a>
             <div class="photo_title"><xsl:value-of select="media[$pos + 0]/title"/></div>
             <div class="photo_description"><xsl:value-of select="media[$pos + 0]/description"/></div>
           </td>
@@ -155,6 +173,10 @@
                 Map links:
                 [<a href="http://maps.google.com/maps?ll={media[$pos + 0]/geodata/@latitude},{media[$pos + 0]/geodata/@longitude}&amp;t=h&amp;z={media[$pos + 0]/geodata/@accuracy}" target="_blank">Google</a>]
               </div>
+            </xsl:if>
+
+            <xsl:if test="media[$pos + 0]/notes and count(media[$pos + 0]/notes/*) &gt; 0">
+              <div class="notes">This photo has notes. Move your mouse over the photo to see them.</div>
             </xsl:if>
 
             <div class="download_links">

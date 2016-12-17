@@ -33,6 +33,9 @@ white-space: pre-wrap; /* CSS 2.1 */
 white-space: pre-line; /* CSS 3 */
 word-wrap: break-word; /* IE */
 }
+div.notes {
+padding-top: 10px;
+}
 img.set_thumb_photo {
 display: block;
 margin-left: auto;
