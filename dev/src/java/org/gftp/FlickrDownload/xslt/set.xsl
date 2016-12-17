@@ -185,7 +185,7 @@
                   <xsl:sort select="@value"/>
 
                   <div class="tag">
-                    <xsl:value-of select="@value"/>
+                    <xsl:value-of select="@raw"/>
                   </div>
                 </xsl:for-each>
               </div>
