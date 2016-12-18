@@ -1,6 +1,6 @@
 /*
   FlickrDownload - Copyright(C) 2010 Brian Masney <masneyb@onstation.org>.
-                 - Copyright(C) 2015 D. R. Commander.
+                 - Copyright(C) 2015-2016 D. R. Commander.
   If you have any questions, comments, or suggestions about this program, please
   feel free to email them to me. You can always find out the latest news about
   FlickrDownload from my website at http://www.onstation.org/flickrdownload/
@@ -39,7 +39,7 @@ import org.jdom.output.Format;
 import org.jdom.output.XMLOutputter;
 
 public class XmlUtils {
-	public static String RAW_DATE_FORMAT = "yyyy-MM-dd HH:mm:ss Z";
+	public static String RAW_DATE_FORMAT = "yyyy-MM-dd HH:mm:ss";
 	public static DateFormat rawDateFormatter = new SimpleDateFormat(RAW_DATE_FORMAT);
 	private static DateFormat prettyDateFormatter = new SimpleDateFormat("MMMM d, yyyy");
 
