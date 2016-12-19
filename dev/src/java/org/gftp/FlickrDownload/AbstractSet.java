@@ -111,7 +111,7 @@ public abstract class AbstractSet {
             for (Note note : (Collection<Note>) photo.getNotes()) {
             	notesEle.addContent(new Element("note")
             		.setAttribute("id", note.getId())
-            		.setAttribute("author", note.getAuthor())
+            		.setAttribute("author", note.getAuthorName())
             		.setAttribute("text", note.getText())
             		.setAttribute("x", String.valueOf(note.getBounds().getX()))
             		.setAttribute("y", String.valueOf(note.getBounds().getY()))
