@@ -57,14 +57,15 @@ table.photo_table {
 margin-left: 5%;
 margin-right: 5%;
 width: 90%;
+table-layout: fixed;
 }
 td.photo_side {
-width: 60%;
+width: 550px;
 vertical-align: top;
 }
 td.info_side {
-width: 40%;
 vertical-align: top;
+word-wrap: break-word;
 }
 table.photo_nav {
 margin-top: 30px;
