@@ -139,16 +139,16 @@
             <div class="privacy">
               <xsl:text>Privacy: </xsl:text>
               <xsl:choose>
-                <xsl:when test="media[$pos + 1]/privacy/@public='1'">
+                <xsl:when test="media[$pos + 0]/privacy/@public='1'">
                   <xsl:text>Public</xsl:text>
                 </xsl:when>
-                <xsl:when test="media[$pos + 1]/privacy/@friends='1' and media[$pos + 1]/privacy/@family='1'">
+                <xsl:when test="media[$pos + 0]/privacy/@friends='1' and media[$pos + 0]/privacy/@family='1'">
                   <xsl:text>Friends/Family</xsl:text>
                 </xsl:when>
-                <xsl:when test="media[$pos + 1]/privacy/@friends='1'">
+                <xsl:when test="media[$pos + 0]/privacy/@friends='1'">
                   <xsl:text>Friends</xsl:text>
                 </xsl:when>
-                <xsl:when test="media[$pos + 1]/privacy/@family='1'">
+                <xsl:when test="media[$pos + 0]/privacy/@family='1'">
                   <xsl:text>Family</xsl:text>
                 </xsl:when>
                 <xsl:otherwise>
