@@ -85,17 +85,19 @@
         </xsl:apply-templates>
 
         <xsl:if test="media[$pos + 0]/notes and count(media[$pos + 0]/notes/*) &gt; 0">
+          <xsl:variable name="originalImage"
+                        select="media[$pos + 0]/image[@type='Original']/@localFilename" />
           <map id="notes" name="notes">
             <xsl:for-each select="media[$pos + 0]/notes/note">
-              <area coords="{@x},{@y},{@x+@width},{@y+@height}" href="{image[@type='Original']/@localFilename}" title="[{@author}] {@text}" alt="[{@author}] {@text}"/>
+              <area coords="{@x},{@y},{@x+@width},{@y+@height}" href="{$originalImage}" target="_blank" title="[{@author}] {@text}" alt="[{@author}] {@text}"/>
             </xsl:for-each>
-            <area coords="0,0,1024,768" href="{image[@type='Original']/@localFilename}"/>
+            <area coords="0,0,1024,768" href="{$originalImage}" target="_blank"/>
           </map>
         </xsl:if>
 
         <table class="photo_table">
           <td class="photo_side" valign="top">
-            <a href="{image[@type='Original']/@localFilename}">
+            <a href="{media[$pos + 0]/image[@type='Original']/@localFilename}" target="_blank">
               <xsl:choose>
                 <xsl:when test="media[$pos + 0]/notes and count(media[$pos + 0]/notes/*) &gt; 0">
                   <img class="medium_photo" usemap="#notes" src="{media[$pos + 0]/image[@type='Medium']/@localFilename}"/>
