@@ -1,6 +1,6 @@
 /*
   FlickrDownload - Copyright(C) 2010 Brian Masney <masneyb@onstation.org>.
-                 - Copyright(C) 2015 D. R. Commander.
+                 - Copyright(C) 2015-2016 D. R. Commander.
   If you have any questions, comments, or suggestions about this program, please
   feel free to email them to me. You can always find out the latest news about
   FlickrDownload from my website at http://www.onstation.org/flickrdownload/
@@ -39,6 +39,7 @@ public class Configuration {
 	public boolean onlyOriginals = false;
 	public boolean useTitles = false;
 	public boolean checkSize = false;
+	public boolean checkSizeAll = false;
 	public String addExtensionToUnknownFiles;
 	public List<String> limitDownloadsToSets;
 	public Auth auth;
