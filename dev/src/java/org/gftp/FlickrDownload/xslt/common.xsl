@@ -32,18 +32,6 @@
 </xsl:template>
 
 <xsl:template match="user" mode="footer">
-  <div class="footer">
-    <xsl:text>Photo information was last synced with </xsl:text>
-    <a href="{flickrUrls/@photos}">Flickr</a>
-    <xsl:text> on </xsl:text>
-    <xsl:value-of select="photosSyncedOn/@pretty"/>
-    <xsl:text> using </xsl:text>
-    <a href="{../application/website}">
-      <xsl:value-of select="../application/name"/>
-      <xsl:text> </xsl:text>
-      <xsl:value-of select="../application/version"/>
-    </a>.
-  </div>
 </xsl:template>
 
 <xsl:template name="pretty_file_size">
