@@ -1,6 +1,6 @@
 /*
   FlickrDownload - Copyright(C) 2010 Brian Masney <masneyb@onstation.org>.
-                 - Copyright(C) 2015-2016 D. R. Commander.
+                 - Copyright(C) 2015-2017 D. R. Commander.
   If you have any questions, comments, or suggestions about this program, please
   feel free to email them to me. You can always find out the latest news about
   FlickrDownload from my website at http://www.onstation.org/flickrdownload/
@@ -30,6 +30,7 @@ import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.URIResolver;
 import javax.xml.transform.stream.StreamResult;
 import javax.xml.transform.stream.StreamSource;
+import javax.xml.ws.http.HTTPException;
 
 import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
@@ -105,12 +106,21 @@ public class XmlUtils {
 		return element;
 	}
 	
-	public static Element downloadMediaAndCreateElement(String elementName, File localFilename, String displayLocalFilename, String remoteUrl, boolean forceDownload, boolean checkSize, Configuration configuration) throws IOException {
-		if (!configuration.onlyData && remoteUrl != null &&
-		     (!localFilename.exists() ||
-		       (checkSize && !IOUtils.sameSize(remoteUrl, localFilename)) ||
-		       forceDownload))
-			IOUtils.downloadUrl(remoteUrl, localFilename);
+	public static Element downloadMediaAndCreateElement(String elementName, File localFilename, String displayLocalFilename, String remoteUrl, String altRemoteUrl, boolean forceDownload, boolean checkSize, Configuration configuration) throws IOException {
+        try {
+            if (!configuration.onlyData && remoteUrl != null &&
+                 (!localFilename.exists() ||
+                   (checkSize && !IOUtils.sameSize(remoteUrl, localFilename)) ||
+                   forceDownload))
+                IOUtils.downloadUrl(remoteUrl, localFilename);
+        } catch (HTTPException e) {
+            if (!configuration.onlyData && altRemoteUrl != null &&
+                 (!localFilename.exists() ||
+                   (checkSize && !IOUtils.sameSize(altRemoteUrl, localFilename)) ||
+                   forceDownload))
+                IOUtils.downloadUrl(altRemoteUrl, localFilename);
+            remoteUrl = altRemoteUrl;
+        }
 
 		return createMediaElement(elementName, localFilename, displayLocalFilename, remoteUrl);
 	}

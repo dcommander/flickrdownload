@@ -1,6 +1,6 @@
 /*
   FlickrDownload - Copyright(C) 2010 Brian Masney <masneyb@onstation.org>.
-                 - Copyright(C) 2015 D. R. Commander.
+                 - Copyright(C) 2015, 2017 D. R. Commander.
   If you have any questions, comments, or suggestions about this program, please
   feel free to email them to me. You can always find out the latest news about
   FlickrDownload from my website at http://www.onstation.org/flickrdownload/
@@ -62,8 +62,8 @@ public class Collections {
     			.addContent(new Element("id").setText(collection.getId()))
     			.addContent(new Element("title").setText(collection.getTitle()))
     			.addContent(new Element("description").setText(collection.getDescription()))
-    			.addContent(XmlUtils.downloadMediaAndCreateElement("iconLarge", largeFile, iconsDir.getName() + File.separator + largeFile.getName(), iconLarge, this.configuration.downloadCollectionIcons, false, configuration))
-    			.addContent(XmlUtils.downloadMediaAndCreateElement("iconSmall", smallFile, iconsDir.getName() + File.separator + smallFile.getName(), iconSmall, this.configuration.downloadCollectionIcons, false, configuration))
+    			.addContent(XmlUtils.downloadMediaAndCreateElement("iconLarge", largeFile, iconsDir.getName() + File.separator + largeFile.getName(), iconLarge, null, this.configuration.downloadCollectionIcons, false, configuration))
+    			.addContent(XmlUtils.downloadMediaAndCreateElement("iconSmall", smallFile, iconsDir.getName() + File.separator + smallFile.getName(), iconSmall, null, this.configuration.downloadCollectionIcons, false, configuration))
     			.addContent(setsEle));
     	}
 

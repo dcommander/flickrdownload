@@ -1,6 +1,6 @@
 /*
   FlickrDownload - Copyright(C) 2010-2011 Brian Masney <masneyb@onstation.org>.
-                 - Copyright(C) 2015 D. R. Commander.
+                 - Copyright(C) 2015, 2017 D. R. Commander.
   If you have any questions, comments, or suggestions about this program, please
   feel free to email them to me. You can always find out the latest news about
   FlickrDownload from my website at http://www.onstation.org/flickrdownload/
@@ -89,7 +89,7 @@ public abstract class AbstractSet {
 				.addContent(XmlUtils.downloadMediaAndCreateElement("thumbnailFile", 
 						new File(setDir, setThumbnailBaseFilename), 
 						getSetId() + File.separator + setThumbnailBaseFilename, 
-						getPrimaryPhotoSmallSquareUrl(), false, configuration.checkSizeAll, configuration))
+						getPrimaryPhotoSmallSquareUrl(), null, false, configuration.checkSizeAll, configuration))
 				.addContent(createStatsXml());
 	}
 
@@ -132,7 +132,7 @@ public abstract class AbstractSet {
             	}
             }
 
-            String originalUrl = null;
+            String originalUrl = null, altOriginalUrl = null;
             String originalBaseFilename;
             String photoName;
             String orig = "_orig";
@@ -143,6 +143,7 @@ public abstract class AbstractSet {
             	photoName = photo.getId();
             if (photo.getMedia().equals("video")) {
             	originalUrl = getOriginalVideoUrl(flickr, photo.getId());
+            	altOriginalUrl = "https://www.flickr.com/video_download.gne?id=" + photo.getId();
             	originalBaseFilename = String.format("%s%s.%s", photoName, orig, IOUtils.getVideoExtension(originalUrl));
             }
             else {
@@ -183,21 +184,21 @@ public abstract class AbstractSet {
             	.addContent(XmlUtils.downloadMediaAndCreateElement("image",
             			new File(getSetDirectory(), smallSquareBaseFilename), 
             			smallSquareBaseFilename,
-            			photo.getSmallSquareUrl(),
+            			photo.getSmallSquareUrl(), null,
             			false, configuration.checkSizeAll,
                         configuration)
             				.setAttribute("type", SMALL_SQUARE_PHOTO_DESCRIPTION))
             	.addContent(XmlUtils.downloadMediaAndCreateElement("image",
             			new File(getSetDirectory(), mediumBaseFilename), 
             			mediumBaseFilename,
-            			photo.getMediumUrl(),
+            			photo.getMediumUrl(), null,
             			false, configuration.checkSizeAll,
                         configuration)
             				.setAttribute("type", MEDIUM_PHOTO_DESCRIPTION))
             	.addContent(XmlUtils.downloadMediaAndCreateElement("image",
             			new File(getSetDirectory(), largeBaseFilename), 
             			largeBaseFilename,
-            			photo.getLargeUrl(),
+            			photo.getLargeUrl(), null,
             			false, configuration.checkSizeAll,
                         configuration)
             				.setAttribute("type", LARGE_PHOTO_DESCRIPTION));
@@ -206,7 +207,7 @@ public abstract class AbstractSet {
             media.addContent(XmlUtils.downloadMediaAndCreateElement("image",
                     new File(getSetDirectory(), originalBaseFilename), 
                     originalBaseFilename,
-                    originalUrl,
+                    originalUrl, altOriginalUrl,
                     false, configuration.checkSize,
                     configuration)
                         .setAttribute("type", ORIGINAL_MEDIA_DESCRIPTION)

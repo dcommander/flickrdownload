@@ -1,6 +1,6 @@
 /*
   FlickrDownload - Copyright(C) 2010 Brian Masney <masneyb@onstation.org>.
-                 - Copyright(C) 2015 D. R. Commander.
+                 - Copyright(C) 2015, 2017 D. R. Commander.
   If you have any questions, comments, or suggestions about this program, please
   feel free to email them to me. You can always find out the latest news about
   FlickrDownload from my website at http://www.onstation.org/flickrdownload/
@@ -91,7 +91,7 @@ public class IOUtils {
 		}
 		else {
 			Logger.getLogger(IOUtils.class).warn("Got HTTP response code " + code + " when trying to check size of " + url);
-			return false;
+			throw new HTTPException(code);
 		}
 
 		Logger.getLogger(IOUtils.class).debug(String.format("Local file size %d != remote file size %d", localFileSize, remoteFileSize));
@@ -112,8 +112,10 @@ public class IOUtils {
         	copyToFileAndCloseStreams(get.getResponseBodyAsStream(), tmpFile);
             tmpFile.renameTo(destFile);
         }
-        else
+        else {
         	Logger.getLogger(IOUtils.class).fatal("Got HTTP response code " + code + " when trying to download " + url);
+        	throw new HTTPException(code);
+        }
 	}
 
 	private static String getRemoteFilename(String url) throws IOException, HTTPException {
