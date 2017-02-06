@@ -173,7 +173,7 @@
               </div>
               <div class="location">
                 Map links:
-                [<a href="http://maps.google.com/maps?ll={media[$pos + 0]/geodata/@latitude},{media[$pos + 0]/geodata/@longitude}&amp;t=h&amp;z={media[$pos + 0]/geodata/@accuracy}" target="_blank">Google</a>]
+                [<a href="http://www.google.com/maps/place/{media[$pos + 0]/geodata/@latitude},{media[$pos + 0]/geodata/@longitude}/@{media[$pos + 0]/geodata/@latitude},{media[$pos + 0]/geodata/@longitude}" target="_blank">Google</a>]
               </div>
             </xsl:if>
 
