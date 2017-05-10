@@ -89,7 +89,7 @@ public abstract class AbstractSet {
 			.addContent(XmlUtils.downloadMediaAndCreateElement("thumbnailFile",
 				new File(setDir, setThumbnailBaseFilename),
 				getSetId() + File.separator + setThumbnailBaseFilename,
-				getPrimaryPhotoSmallSquareUrl(), null, false, configuration.checkSizeAll, configuration))
+				getPrimaryPhotoSmallSquareUrl(), false, configuration.checkSizeAll, configuration))
 			.addContent(createStatsXml());
 	}
 
@@ -132,7 +132,8 @@ public abstract class AbstractSet {
 			}
 		}
 
-		String originalUrl = null, altOriginalUrl = null;
+		String originalUrl = null;
+		String videoUrls[] = null;
 		String originalBaseFilename;
 		String photoName;
 		String orig = "_orig";
@@ -142,9 +143,11 @@ public abstract class AbstractSet {
 		} else
 			photoName = photo.getId();
 		if (photo.getMedia().equals("video")) {
-			originalUrl = getOriginalVideoUrl(flickr, photo.getId());
-			altOriginalUrl = "https://www.flickr.com/video_download.gne?id=" + photo.getId();
-			originalBaseFilename = String.format("%s%s.%s", photoName, orig, IOUtils.getVideoExtension(originalUrl));
+			videoUrls = new String[3];
+			videoUrls[0] = getOriginalVideoUrl(flickr, photo.getId());
+			videoUrls[1] = "https://www.flickr.com/video_download.gne?id=" + photo.getId();
+			videoUrls[2] = getVideoUrl(flickr, photo.getId());
+			originalBaseFilename = String.format("%s%s.%s", photoName, orig, IOUtils.getVideoExtension(videoUrls[0]));
 		}
 		else {
 			try {
@@ -184,54 +187,85 @@ public abstract class AbstractSet {
 				.addContent(XmlUtils.downloadMediaAndCreateElement("image",
 					new File(getSetDirectory(), smallSquareBaseFilename),
 					smallSquareBaseFilename,
-					photo.getSmallSquareUrl(), null,
+					photo.getSmallSquareUrl(),
 					false, configuration.checkSizeAll,
 					configuration)
 						.setAttribute("type", SMALL_SQUARE_PHOTO_DESCRIPTION))
 				.addContent(XmlUtils.downloadMediaAndCreateElement("image",
 					new File(getSetDirectory(), mediumBaseFilename),
 					mediumBaseFilename,
-					photo.getMediumUrl(), null,
+					photo.getMediumUrl(),
 					false, configuration.checkSizeAll,
 					configuration)
 						.setAttribute("type", MEDIUM_PHOTO_DESCRIPTION))
 				.addContent(XmlUtils.downloadMediaAndCreateElement("image",
 					new File(getSetDirectory(), largeBaseFilename),
 					largeBaseFilename,
-					photo.getLargeUrl(), null,
+					photo.getLargeUrl(),
 					false, configuration.checkSizeAll,
 					configuration)
 						.setAttribute("type", LARGE_PHOTO_DESCRIPTION));
 		}
 
-		media.addContent(XmlUtils.downloadMediaAndCreateElement("image",
-				new File(getSetDirectory(), originalBaseFilename),
-				originalBaseFilename,
-				originalUrl, altOriginalUrl,
-				false, configuration.checkSize,
-				configuration)
-					.setAttribute("type", ORIGINAL_MEDIA_DESCRIPTION)
-					.setAttribute("format", photo.getOriginalFormat()))
-			.addContent(new Element("dates")
-				.addContent(XmlUtils.createDateElement("taken", photo.getDateTaken())
-					.setAttribute("granularity", photo.getTakenGranularity()))
-				.addContent(XmlUtils.createDateElement("uploaded", photo.getDatePosted()))
-				.addContent(XmlUtils.createDateElement("lastUpdate", photo.getLastUpdate())))
-			.addContent(new Element("license").setText(Licenses.getLicense(flickr, photo.getLicense())))
-			.addContent(new Element("primary").setText(photo.getId().equals(getPrimaryPhotoId()) ? "1" : "0"))
-			.addContent(new Element("privacy")
-				.setAttribute("family", (photo.isFamilyFlag() ? "1" : "0"))
-				.setAttribute("friends", (photo.isFriendFlag() ? "1" : "0"))
-				.setAttribute("public", (photo.isPublicFlag() ? "1" : "0")))
-			.addContent(new Element("rotation").setText(String.valueOf(photo.getRotation())))
-			.addContent(new Element("geodata")
-				.setAttribute("placeId", photo.getPlaceId())
-				.setAttribute("accuracy", geoData == null ? "" : String.valueOf(geoData.getAccuracy()))
-				.setAttribute("latitude", geoData == null ? "" : String.valueOf(geoData.getLatitude()))
-				.setAttribute("longitude", geoData == null ? "" : String.valueOf(geoData.getLongitude())))
-			.addContent(tagEle)
-			.addContent(notesEle)
-			.addContent(exifTagsEle);
+		if (photo.getMedia().equals("video")) {
+			media.addContent(XmlUtils.downloadVideoAndCreateElement("image",
+					new File(getSetDirectory(), originalBaseFilename),
+					originalBaseFilename,
+					videoUrls,
+					false, configuration.checkSize,
+					configuration)
+						.setAttribute("type", ORIGINAL_MEDIA_DESCRIPTION)
+						.setAttribute("format", photo.getOriginalFormat()))
+				.addContent(new Element("dates")
+					.addContent(XmlUtils.createDateElement("taken", photo.getDateTaken())
+						.setAttribute("granularity", photo.getTakenGranularity()))
+					.addContent(XmlUtils.createDateElement("uploaded", photo.getDatePosted()))
+					.addContent(XmlUtils.createDateElement("lastUpdate", photo.getLastUpdate())))
+				.addContent(new Element("license").setText(Licenses.getLicense(flickr, photo.getLicense())))
+				.addContent(new Element("primary").setText(photo.getId().equals(getPrimaryPhotoId()) ? "1" : "0"))
+				.addContent(new Element("privacy")
+					.setAttribute("family", (photo.isFamilyFlag() ? "1" : "0"))
+					.setAttribute("friends", (photo.isFriendFlag() ? "1" : "0"))
+					.setAttribute("public", (photo.isPublicFlag() ? "1" : "0")))
+				.addContent(new Element("rotation").setText(String.valueOf(photo.getRotation())))
+				.addContent(new Element("geodata")
+					.setAttribute("placeId", photo.getPlaceId())
+					.setAttribute("accuracy", geoData == null ? "" : String.valueOf(geoData.getAccuracy()))
+					.setAttribute("latitude", geoData == null ? "" : String.valueOf(geoData.getLatitude()))
+					.setAttribute("longitude", geoData == null ? "" : String.valueOf(geoData.getLongitude())))
+				.addContent(tagEle)
+				.addContent(notesEle)
+				.addContent(exifTagsEle);
+		} else {
+			media.addContent(XmlUtils.downloadMediaAndCreateElement("image",
+					new File(getSetDirectory(), originalBaseFilename),
+					originalBaseFilename,
+					originalUrl,
+					false, configuration.checkSize,
+					configuration)
+						.setAttribute("type", ORIGINAL_MEDIA_DESCRIPTION)
+						.setAttribute("format", photo.getOriginalFormat()))
+				.addContent(new Element("dates")
+					.addContent(XmlUtils.createDateElement("taken", photo.getDateTaken())
+						.setAttribute("granularity", photo.getTakenGranularity()))
+					.addContent(XmlUtils.createDateElement("uploaded", photo.getDatePosted()))
+					.addContent(XmlUtils.createDateElement("lastUpdate", photo.getLastUpdate())))
+				.addContent(new Element("license").setText(Licenses.getLicense(flickr, photo.getLicense())))
+				.addContent(new Element("primary").setText(photo.getId().equals(getPrimaryPhotoId()) ? "1" : "0"))
+				.addContent(new Element("privacy")
+					.setAttribute("family", (photo.isFamilyFlag() ? "1" : "0"))
+					.setAttribute("friends", (photo.isFriendFlag() ? "1" : "0"))
+					.setAttribute("public", (photo.isPublicFlag() ? "1" : "0")))
+				.addContent(new Element("rotation").setText(String.valueOf(photo.getRotation())))
+				.addContent(new Element("geodata")
+					.setAttribute("placeId", photo.getPlaceId())
+					.setAttribute("accuracy", geoData == null ? "" : String.valueOf(geoData.getAccuracy()))
+					.setAttribute("latitude", geoData == null ? "" : String.valueOf(geoData.getLatitude()))
+					.setAttribute("longitude", geoData == null ? "" : String.valueOf(geoData.getLongitude())))
+				.addContent(tagEle)
+				.addContent(notesEle)
+				.addContent(exifTagsEle);
+		}
 
 		setXml.addContent(media);
 	}
@@ -255,19 +289,23 @@ public abstract class AbstractSet {
 
 	private static String getOriginalVideoUrl(Flickr flickr, String photoId) throws IOException, FlickrException, SAXException {
 		String origUrl = null;
+		for (Size size : (Collection<Size>) flickr.getPhotosInterface().getSizes(photoId, true)) {
+			if (size.getSource().contains("/play/orig"))
+				return size.getSource();
+		}
+		return null;
+	}
+
+	private static String getVideoUrl(Flickr flickr, String photoId) throws IOException, FlickrException, SAXException {
 		String hdUrl = null;
 		String siteUrl = null;
 		for (Size size : (Collection<Size>) flickr.getPhotosInterface().getSizes(photoId, true)) {
-			if (size.getSource().contains("/play/orig"))
-				origUrl = size.getSource();
-			else if (size.getSource().contains("/play/hd"))
+			if (size.getSource().contains("/play/hd"))
 				hdUrl = size.getSource();
 			else if (size.getSource().contains("/play/site"))
 				siteUrl = size.getSource();
 		}
-		if (origUrl != null)
-			return origUrl;
-		else if (hdUrl != null)
+		if (hdUrl != null)
 			return hdUrl;
 		else if (siteUrl != null)
 			return siteUrl;

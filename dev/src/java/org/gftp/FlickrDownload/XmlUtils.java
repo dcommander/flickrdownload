@@ -106,23 +106,35 @@ public class XmlUtils {
 		return element;
 	}
 
-	public static Element downloadMediaAndCreateElement(String elementName, File localFilename, String displayLocalFilename, String remoteUrl, String altRemoteUrl, boolean forceDownload, boolean checkSize, Configuration configuration) throws IOException {
-		try {
-			if (!configuration.onlyData && remoteUrl != null &&
-					(!localFilename.exists() ||
-						(checkSize && !IOUtils.sameSize(remoteUrl, localFilename)) ||
-							forceDownload))
-				IOUtils.downloadUrl(remoteUrl, localFilename);
-		} catch (HTTPException e) {
-			if (!configuration.onlyData && altRemoteUrl != null &&
-					(!localFilename.exists() ||
-						(checkSize && !IOUtils.sameSize(altRemoteUrl, localFilename)) ||
-							forceDownload))
-				IOUtils.downloadUrl(altRemoteUrl, localFilename);
-			remoteUrl = altRemoteUrl;
-		}
+	public static Element downloadMediaAndCreateElement(String elementName, File localFilename, String displayLocalFilename, String remoteUrl, boolean forceDownload, boolean checkSize, Configuration configuration) throws IOException {
+		if (!configuration.onlyData && remoteUrl != null &&
+				(!localFilename.exists() ||
+					(checkSize && !IOUtils.sameSize(remoteUrl, localFilename)) ||
+						forceDownload))
+			IOUtils.downloadUrl(remoteUrl, localFilename);
 
 		return createMediaElement(elementName, localFilename, displayLocalFilename, remoteUrl);
+	}
+
+	public static Element downloadVideoAndCreateElement(String elementName, File localFilename, String displayLocalFilename, String urls[], boolean forceDownload, boolean checkSize, Configuration configuration) throws IOException {
+		int i;
+
+		for (i = 0; i < urls.length; i++) {
+			try {
+				if (!configuration.onlyData && urls[i] != null &&
+					 (!localFilename.exists() ||
+					   (checkSize && !IOUtils.sameSize(urls[i], localFilename)) ||
+						   forceDownload))
+					IOUtils.downloadUrl(urls[i], localFilename);
+			} catch (HTTPException e) {
+				if (i == urls.length - 1)
+					throw e;
+				continue;
+			}
+			break;
+		}
+
+		return createMediaElement(elementName, localFilename, displayLocalFilename, urls[i]);
 	}
 
 	public static void performXsltTransformation(final Configuration configuration, String xsltStylesheet, File xmlFile, File outputFile, XsltParameter... parameters) throws IOException, TransformerException {
