@@ -73,7 +73,7 @@ public class Stats {
 			Element usernameEle = userEle.getChild("username");
 			if (usernameEle == null)
 				return null;
-			
+
 			return usernameEle.getText();
 		}
 		finally {
@@ -99,7 +99,7 @@ public class Stats {
 			Element usernameEle = userEle.getChild("authUser");
 			if (usernameEle == null)
 				return null;
-			
+
 			return usernameEle.getAttributeValue("username");
 		}
 		finally {
@@ -125,20 +125,20 @@ public class Stats {
 			Logger.getLogger(Stats.class).info(String.format("Gathering statistics from file %s", setXmlFilename.getAbsolutePath()));
 
 			for (Object mediaTemp : (List<?>) root.getChildren("media")) {
-                Element mediaElement = (Element) mediaTemp; // because getChildren returns List, not List<Element>
+				Element mediaElement = (Element) mediaTemp; // because getChildren returns List, not List<Element>
 				mediaIndexer.addToIndex(setId, mediaElement);
 
-				String type = mediaElement.getAttributeValue("type");					
+				String type = mediaElement.getAttributeValue("type");
 				if (!allStats.containsKey(type))
 					allStats.put(type, new MediaStats());
-				
+
 				MediaStats stats = allStats.get(type);
 
 				String mediaId = mediaElement.getChildText("id");
 				String mediumMd5sum = null;
 
 				for (Object imageTemp : (List<?>) mediaElement.getChildren("image")) {
-                    Element imageElement = (Element) imageTemp;
+					Element imageElement = (Element) imageTemp;
 					String sizeStr = imageElement.getAttributeValue("size");
 					if (sizeStr == null)
 						continue;
@@ -173,7 +173,7 @@ public class Stats {
 				else if (privacy.getAttributeValue("friends").equals("1") && privacy.getAttributeValue("family").equals("1"))
 					stats.friendsAndFamilyPhotos++;
 				else if (privacy.getAttributeValue("family").equals("1"))
-					stats.familyOnlyPhotos++;				
+					stats.familyOnlyPhotos++;
 				else if (privacy.getAttributeValue("friends").equals("1"))
 					stats.friendsOnlyPhotos++;
 				else
@@ -228,7 +228,7 @@ public class Stats {
 				List<String> photoIds = stats.md5sums.get(md5sum);
 				if (photoIds.size() <= 1)
 					continue;
-				
+
 				Element dupEle = new Element("duplicate");
 				for (String photoId : photoIds) {
 					dupEle.addContent(new Element("photo_id").setText(photoId));

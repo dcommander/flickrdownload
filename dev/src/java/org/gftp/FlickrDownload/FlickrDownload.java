@@ -63,11 +63,11 @@ public class FlickrDownload {
 		public String addExtensionToUnknownFiles;
 
 		@Option(name="--limitToSet", required=false, multiValued=true)
-		public List<String> limitDownloadsToSets = new ArrayList<String>();		
+		public List<String> limitDownloadsToSets = new ArrayList<String>();
 
 		@Option(name="--debug", required=false)
 		public boolean debug = false;
-		
+
 		@Option(name="--downloadExifData", required=false)
 		public boolean downloadExifData = false;
 
@@ -166,7 +166,7 @@ public class FlickrDownload {
 	}
 
 	public static void main(String[] args) throws Exception {
-		System.out.println(String.format("%s %s - Copyright(C) 2007,2010-2011 Brian Masney <masneyb@onstation.org>.", 
+		System.out.println(String.format("%s %s - Copyright(C) 2007,2010-2011 Brian Masney <masneyb@onstation.org>.",
 				getApplicationName(), getApplicationVersion()));
 		System.out.println("If you have any questions, comments, or suggestions about this program, please");
 		System.out.println("feel free to email them to me. You can always find out the latest news about");
@@ -202,8 +202,8 @@ public class FlickrDownload {
 		Flickr flickr = Authentication.getFlickr();
 		Configuration configuration = new Configuration(
 				flickr,
-				new File(values.photosDirectory), 
-					StringUtils.isBlank(values.authDirectory) ? null : new File(values.authDirectory), 
+				new File(values.photosDirectory),
+					StringUtils.isBlank(values.authDirectory) ? null : new File(values.authDirectory),
 				values.authUsername);
 
 		createdToplevelFiles.add(configuration.authUser.getId() + ".auth");
@@ -216,24 +216,24 @@ public class FlickrDownload {
 			if (pu == null)
 				throw new IllegalArgumentException("Cannot find user with ID " + values.photosUsername);
 			configuration.photosUser = pi.getInfo(pu.getId());
-		} 
+		}
 
-        configuration.onlyData = values.onlyData;
-        configuration.onlyOriginals = values.onlyOriginals;
+		configuration.onlyData = values.onlyData;
+		configuration.onlyOriginals = values.onlyOriginals;
 		configuration.useTitles = values.useTitles;
 		configuration.checkSize = values.checkSize;
 		configuration.checkSizeAll = values.checkSizeAll;
 
 		configuration.buddyIconFilename = new File(configuration.photosBaseDirectory, configuration.photosUser.getRealName() + ".jpg");
 		if (!configuration.onlyData && (configuration.alwaysDownloadBuddyIcon || !configuration.buddyIconFilename.exists()))
-			IOUtils.downloadUrl(configuration.photosUser.getSecureBuddyIconUrl(), 
+			IOUtils.downloadUrl(configuration.photosUser.getSecureBuddyIconUrl(),
 					configuration.buddyIconFilename);
 		createdToplevelFiles.add(configuration.buddyIconFilename.getName());
 
 		configuration.downloadExifData = values.downloadExifData;
 		configuration.partialDownloads = values.partial;
 		configuration.addExtensionToUnknownFiles = values.addExtensionToUnknownFiles;
-        configuration.limitDownloadsToSets = values.limitDownloadsToSets;
+		configuration.limitDownloadsToSets = values.limitDownloadsToSets;
 
 		if (values.debug) {
 			Flickr.debugRequest = true;

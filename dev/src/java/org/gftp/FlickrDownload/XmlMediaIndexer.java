@@ -80,13 +80,13 @@ public class XmlMediaIndexer implements MediaIndexer {
 	private Element cloneXml(Element origEle) {
 		Element newEle = new Element(origEle.getName());
 		for (Object attrTemp : (List<?>) origEle.getAttributes()) {
-            Attribute attr = (Attribute) attrTemp; // because jdom doesn't use generics
+			Attribute attr = (Attribute) attrTemp; // because jdom doesn't use generics
 			newEle.setAttribute(attr.getName(), attr.getValue());
 		}
 		if (origEle.getText() != null)
 			newEle.setText(origEle.getText());
-		for (Object childTemp : (List<?>) origEle.getChildren()) { 
-            Element child = (Element) childTemp;
+		for (Object childTemp : (List<?>) origEle.getChildren()) {
+			Element child = (Element) childTemp;
 			newEle.addContent(cloneXml(child));
 		}
 		return newEle;
@@ -108,7 +108,7 @@ public class XmlMediaIndexer implements MediaIndexer {
 		}
 		parent.addContent(allMedia);
 
-		Element byDateTaken = new Element("by_date_taken");		
+		Element byDateTaken = new Element("by_date_taken");
 		SortedMap<String, SortedSet<DateGroup>> yearMonths = new TreeMap<String, SortedSet<DateGroup>>();
 		for (DateGroup date : this.takenByDate.keySet()) {
 			if (!yearMonths.containsKey(date.year))
@@ -126,7 +126,7 @@ public class XmlMediaIndexer implements MediaIndexer {
 			}
 			byDateTaken.addContent(dateEle);
 		}
-		
+
 		Element yearsEle = new Element("years");
 		for (String year : yearMonths.keySet()) {
 			Element yearEle = new Element("year").setAttribute("value", year);
@@ -150,7 +150,7 @@ public class XmlMediaIndexer implements MediaIndexer {
 		File xmlFile = new File(this.configuration.photosBaseDirectory, INDEX_XML_FILENAME);
 		XmlUtils.outputXmlFile(xmlFile, generateStatsXml());
 		outputFiles.add(INDEX_XML_FILENAME);
-		
+
 		XmlUtils.performXsltTransformation(this.configuration, "date_taken_index.xsl", xmlFile,
 				new File(this.configuration.photosBaseDirectory, INDEX_HTML_FILENAME));
 		outputFiles.add(INDEX_HTML_FILENAME);
@@ -165,7 +165,7 @@ public class XmlMediaIndexer implements MediaIndexer {
 
 		return outputFiles;
 	}
-	
+
 	protected class MainPhotoIndexEntry {
 		protected Element xmlSnippet;
 		protected Set<String> sets = new HashSet<String>();
@@ -183,7 +183,7 @@ public class XmlMediaIndexer implements MediaIndexer {
 		public int compareTo(MediaEntryByDate m) {
 			return this.date.compareTo(m.date);
 		}
-		
+
 		@Override
 		public int hashCode() {
 			return this.mediaId.hashCode();
@@ -192,7 +192,7 @@ public class XmlMediaIndexer implements MediaIndexer {
 		@Override
 		public boolean equals(Object obj) {
 			return this.mediaId.equals(obj);
-		}		
+		}
 	}
 
 	protected static class DateGroup implements Comparable<DateGroup> {
@@ -209,7 +209,7 @@ public class XmlMediaIndexer implements MediaIndexer {
 			this.month = monthFormatter.format(input);
 			this.rawDate = rawDateFormatter.format(input);
 		}
-	
+
 		public int compareTo(DateGroup o) {
 			return this.rawDate.compareTo(o.rawDate);
 		}

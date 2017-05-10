@@ -40,7 +40,7 @@ public class Authentication {
 	public static Flickr getFlickr() throws ParserConfigurationException {
 		return new Flickr("16c1a6a31f28e670500d02f6b13935b1", "0fa4d39da5eab415", new RESTRetryTransport());
 	}
-	
+
 	public static Auth authorize(Flickr flickr, File authDirectory, String username) throws IOException, SAXException, FlickrException {
 		AuthStore authStore = new FileAuthStore(authDirectory);
 		Auth auth = authStore.retrieve(flickr.getPeopleInterface().findByUsername(username).getId());
@@ -74,7 +74,7 @@ public class Authentication {
 		}
 
 		@Override
-	    public Response get(String path, Map<String, Object> parameters, String apiKey, String sharedSecret) {
+		public Response get(String path, Map<String, Object> parameters, String apiKey, String sharedSecret) {
 			while (true) {
 				try {
 					return super.get(path, parameters, apiKey, sharedSecret);
@@ -90,9 +90,9 @@ public class Authentication {
 				}
 			}
 		}
-		
+
 		@Override
-	    public Response post(String path, Map<String, Object> parameters, String apiKey, String sharedSecret, boolean multipart) {
+		public Response post(String path, Map<String, Object> parameters, String apiKey, String sharedSecret, boolean multipart) {
 			while (true) {
 				try {
 					return super.post(path, parameters, apiKey, sharedSecret, multipart);

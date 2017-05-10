@@ -27,9 +27,9 @@ public class Licenses {
 	private synchronized static Map<String,String> getLicenses(Flickr flickr) throws FlickrException, IOException, SAXException {
 		if (licenses == null) {
 			licenses = new HashMap<String, String>();
-	    	for (Object lic : flickr.getLicensesInterface().getInfo()) {
-	    		licenses.put(((License) lic).getId(), ((License) lic).getName());
-	    	}			
+			for (Object lic : flickr.getLicensesInterface().getInfo()) {
+				licenses.put(((License) lic).getId(), ((License) lic).getName());
+			}
 		}
 		return licenses;
 	}

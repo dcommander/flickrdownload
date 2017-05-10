@@ -26,7 +26,7 @@ public class NoopMediaIndexer implements MediaIndexer {
 	}
 
 	public Collection<String> writeIndex() throws IOException {
-        Collection<String> empty = new ArrayList<String>();
+		Collection<String> empty = new ArrayList<String>();
 		return empty;
 	}
 

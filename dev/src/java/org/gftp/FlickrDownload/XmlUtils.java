@@ -78,7 +78,7 @@ public class XmlUtils {
 		PrintWriter out = new PrintWriter(dest);
 		XMLOutputter outputter = new XMLOutputter(Format.getPrettyFormat());
 		outputter.output(new Document(root), out);
-		out.flush();		
+		out.flush();
 	}
 
 	public static Element createDateElement(String elementName, Date date) {
@@ -90,7 +90,7 @@ public class XmlUtils {
 	public static Element createMediaElement(String elementName, File localFilename, String displayLocalFilename, String remoteUrl) {
 		Element element = new Element(elementName)
 			.setAttribute("publicUrl", StringUtils.defaultString(remoteUrl));
-		
+
 		if (localFilename != null) {
 			element.setAttribute("localFilename", displayLocalFilename)
 				.setAttribute("size", String.valueOf(localFilename.length()))
@@ -105,22 +105,22 @@ public class XmlUtils {
 
 		return element;
 	}
-	
+
 	public static Element downloadMediaAndCreateElement(String elementName, File localFilename, String displayLocalFilename, String remoteUrl, String altRemoteUrl, boolean forceDownload, boolean checkSize, Configuration configuration) throws IOException {
-        try {
-            if (!configuration.onlyData && remoteUrl != null &&
-                 (!localFilename.exists() ||
-                   (checkSize && !IOUtils.sameSize(remoteUrl, localFilename)) ||
-                   forceDownload))
-                IOUtils.downloadUrl(remoteUrl, localFilename);
-        } catch (HTTPException e) {
-            if (!configuration.onlyData && altRemoteUrl != null &&
-                 (!localFilename.exists() ||
-                   (checkSize && !IOUtils.sameSize(altRemoteUrl, localFilename)) ||
-                   forceDownload))
-                IOUtils.downloadUrl(altRemoteUrl, localFilename);
-            remoteUrl = altRemoteUrl;
-        }
+		try {
+			if (!configuration.onlyData && remoteUrl != null &&
+					(!localFilename.exists() ||
+						(checkSize && !IOUtils.sameSize(remoteUrl, localFilename)) ||
+							forceDownload))
+				IOUtils.downloadUrl(remoteUrl, localFilename);
+		} catch (HTTPException e) {
+			if (!configuration.onlyData && altRemoteUrl != null &&
+					(!localFilename.exists() ||
+						(checkSize && !IOUtils.sameSize(altRemoteUrl, localFilename)) ||
+							forceDownload))
+				IOUtils.downloadUrl(altRemoteUrl, localFilename);
+			remoteUrl = altRemoteUrl;
+		}
 
 		return createMediaElement(elementName, localFilename, displayLocalFilename, remoteUrl);
 	}
@@ -136,7 +136,7 @@ public class XmlUtils {
 			xmlInput = new FileInputStream(xmlFile);
 			output = new PrintWriter(outputFile);
 			TransformerFactory factory = TransformerFactory.newInstance();
-			factory.setURIResolver(new URIResolver() {				
+			factory.setURIResolver(new URIResolver() {
 				public Source resolve(String href, String base) throws TransformerException {
 					return new StreamSource(XmlUtils.class.getResourceAsStream("xslt/" + href));
 				}

@@ -33,7 +33,7 @@ public class Collections {
 		this.configuration = configuration;
 		this.flickr = flickr;
 	}
-	
+
 	public Element createTopLevelXml() throws FlickrException, SAXException, IOException {
 		CollectionsInterface collectionsInterface = this.flickr.getCollectionsInterface();
 
@@ -41,32 +41,32 @@ public class Collections {
 		iconsDir.mkdir();
 
 		Element allCollections = new Element("collections");
-    	for (Collection collection : collectionsInterface.getTree(null, null)) {
-    		Element setsEle = new Element("sets");
-    		for (Photoset set : collection.getPhotosets()) {
-    			setsEle.addContent(new Element("set")
-    				.setAttribute("id", set.getId())
-    				.setAttribute("title", set.getTitle()));
-    		}
+		for (Collection collection : collectionsInterface.getTree(null, null)) {
+			Element setsEle = new Element("sets");
+			for (Photoset set : collection.getPhotosets()) {
+				setsEle.addContent(new Element("set")
+					.setAttribute("id", set.getId())
+					.setAttribute("title", set.getTitle()));
+			}
 
-            String iconLarge = collection.getIconLarge();
-            String iconSmall = collection.getIconSmall();
+			String iconLarge = collection.getIconLarge();
+			String iconSmall = collection.getIconSmall();
 
-            if(!iconLarge.matches("^https://.*")) iconLarge = "https://www.flickr.com" + iconLarge;
-            if(!iconSmall.matches("^https://.*")) iconSmall = "https://www.flickr.com" + iconSmall;
+			if(!iconLarge.matches("^https://.*")) iconLarge = "https://www.flickr.com" + iconLarge;
+			if(!iconSmall.matches("^https://.*")) iconSmall = "https://www.flickr.com" + iconSmall;
 
-    		File largeFile = new File(iconsDir, collection.getId() + "-large." + (iconLarge.matches(".*jpg$") ? "jpg" : "gif"));
-    		File smallFile = new File(iconsDir, collection.getId() + "-small." + (iconSmall.matches(".*jpg$") ? "jpg" : "gif"));
+			File largeFile = new File(iconsDir, collection.getId() + "-large." + (iconLarge.matches(".*jpg$") ? "jpg" : "gif"));
+			File smallFile = new File(iconsDir, collection.getId() + "-small." + (iconSmall.matches(".*jpg$") ? "jpg" : "gif"));
 
-    		allCollections.addContent(new Element("collection")
-    			.addContent(new Element("id").setText(collection.getId()))
-    			.addContent(new Element("title").setText(collection.getTitle()))
-    			.addContent(new Element("description").setText(collection.getDescription()))
-    			.addContent(XmlUtils.downloadMediaAndCreateElement("iconLarge", largeFile, iconsDir.getName() + File.separator + largeFile.getName(), iconLarge, null, this.configuration.downloadCollectionIcons, false, configuration))
-    			.addContent(XmlUtils.downloadMediaAndCreateElement("iconSmall", smallFile, iconsDir.getName() + File.separator + smallFile.getName(), iconSmall, null, this.configuration.downloadCollectionIcons, false, configuration))
-    			.addContent(setsEle));
-    	}
+			allCollections.addContent(new Element("collection")
+				.addContent(new Element("id").setText(collection.getId()))
+				.addContent(new Element("title").setText(collection.getTitle()))
+				.addContent(new Element("description").setText(collection.getDescription()))
+				.addContent(XmlUtils.downloadMediaAndCreateElement("iconLarge", largeFile, iconsDir.getName() + File.separator + largeFile.getName(), iconLarge, null, this.configuration.downloadCollectionIcons, false, configuration))
+				.addContent(XmlUtils.downloadMediaAndCreateElement("iconSmall", smallFile, iconsDir.getName() + File.separator + smallFile.getName(), iconSmall, null, this.configuration.downloadCollectionIcons, false, configuration))
+				.addContent(setsEle));
+		}
 
-    	return allCollections;
+		return allCollections;
 	}
 }

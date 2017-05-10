@@ -34,9 +34,9 @@ public class PhotosNotInASet extends AbstractSet {
 	public PhotosNotInASet(Configuration configuration, Flickr flickr) throws IOException, SAXException, FlickrException {
 		super(configuration);
 
-        if(configuration.limitDownloadsToSets.size() > 0) {
-            return;
-        }
+		if(configuration.limitDownloadsToSets.size() > 0) {
+			return;
+		}
 
 		Logger.getLogger(getClass()).info("Downloading list of photos that are not in a set");
 
@@ -68,10 +68,10 @@ public class PhotosNotInASet extends AbstractSet {
 
 	@Override
 	protected void download(Flickr flickr, Element setXml) throws IOException, SAXException, FlickrException {
-        int retrievedPhotos = 0;
+		int retrievedPhotos = 0;
 		for (Photo photo : this.photoSet) {
-            retrievedPhotos++;
-            Logger.getLogger(PhotosNotInASet.class).info("Processing photo " + retrievedPhotos + " of " + this.photoSet.size() + ": " + photo.getUrl());
+			retrievedPhotos++;
+			Logger.getLogger(PhotosNotInASet.class).info("Processing photo " + retrievedPhotos + " of " + this.photoSet.size() + ": " + photo.getUrl());
 			processPhoto(photo, flickr, setXml);
 		}
 	}

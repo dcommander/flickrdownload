@@ -46,10 +46,10 @@ public class Set extends AbstractSet {
 			for (int i = 0; i < photos.size(); i++) {
 				retrievedPhotos++;
 				Photo photo = (Photo) photos.get(i);
-                Logger.getLogger(Set.class).info("Processing photo " + retrievedPhotos + " of " + totalPhotos + ": " + photo.getUrl());
+				Logger.getLogger(Set.class).info("Processing photo " + retrievedPhotos + " of " + totalPhotos + ": " + photo.getUrl());
 				processPhoto(photo, flickr, setXml);
 			}
-		} while (retrievedPhotos < totalPhotos);		
+		} while (retrievedPhotos < totalPhotos);
 	}
 
 	@Override

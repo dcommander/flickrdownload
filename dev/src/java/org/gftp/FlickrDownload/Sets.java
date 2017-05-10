@@ -51,52 +51,52 @@ public class Sets {
 		Logger.getLogger(Sets.class).info("Downloading photo set information");
 
 		List<AbstractSet> setMap = new LinkedList<AbstractSet>();
-        Iterator<Photoset> fsets = this.flickr.getPhotosetsInterface().getList(this.configuration.photosUser.getId()).getPhotosets().iterator();
-        while (fsets.hasNext()) {
-            Photoset fset = fsets.next();
-        	AbstractSet s = new Set(this.configuration, fset);
-        	setMap.add(s);
-        }
-        
-        PhotosNotInASet photosNotInSet = new PhotosNotInASet(this.configuration, this.flickr);
-        if (photosNotInSet.getMediaCount() > 0)
-        	setMap.add(photosNotInSet);
+		Iterator<Photoset> fsets = this.flickr.getPhotosetsInterface().getList(this.configuration.photosUser.getId()).getPhotosets().iterator();
+		while (fsets.hasNext()) {
+			Photoset fset = fsets.next();
+			AbstractSet s = new Set(this.configuration, fset);
+			setMap.add(s);
+		}
 
-        return setMap;
+		PhotosNotInASet photosNotInSet = new PhotosNotInASet(this.configuration, this.flickr);
+		if (photosNotInSet.getMediaCount() > 0)
+			setMap.add(photosNotInSet);
+
+		return setMap;
 	}
-	
+
 	public Element createTopLevelXml() throws JDOMException, IOException {
 		Element allSets = new Element("sets");
-    	for (AbstractSet set : this.sets) {
-			if (configuration.limitDownloadsToSets.size() > 0 && !configuration.limitDownloadsToSets.contains(set.getSetId()))
+		for (AbstractSet set : this.sets) {
+		if (configuration.limitDownloadsToSets.size() > 0 && !configuration.limitDownloadsToSets.contains(set.getSetId()))
+			continue;
+
+			allSets.addContent(set.createToplevelXml());
+		}
+		return allSets;
+	}
+
+	public void performXsltTransformation() throws IOException, TransformerException {
+		for (AbstractSet set : this.sets) {
+			File setXmlFile = set.getSetXmlFilename();
+			if (!setXmlFile.exists())
 				continue;
 
-    		allSets.addContent(set.createToplevelXml());
-    	}
-    	return allSets;
-	}
-	
-	public void performXsltTransformation() throws IOException, TransformerException {	
-    	for (AbstractSet set : this.sets) {
-    		File setXmlFile = set.getSetXmlFilename();
-    		if (!setXmlFile.exists())
-    			continue;
+			File setDir = set.getSetDirectory();
+			XmlUtils.performXsltTransformation(this.configuration, "set.xsl",
+				setXmlFile,
+				new File(setDir, SET_THUMBNAIL_FILENAME));
 
-    		File setDir = set.getSetDirectory();
-    		XmlUtils.performXsltTransformation(this.configuration, "set.xsl",
-    				setXmlFile,
-    				new File(setDir, SET_THUMBNAIL_FILENAME));
-
-    		XmlUtils.performXsltTransformation(this.configuration, "set_detail.xsl",
-    				setXmlFile,
-    				new File(setDir, SET_DETAIL_FILENAME));
-    	}		
+			XmlUtils.performXsltTransformation(this.configuration, "set_detail.xsl",
+				setXmlFile,
+				new File(setDir, SET_DETAIL_FILENAME));
+		}
 	}
 
 	public void downloadAllPhotos() throws Exception {
 		for (AbstractSet set : this.sets) {
 			if (configuration.limitDownloadsToSets.size() > 0 && !configuration.limitDownloadsToSets.contains(set.getSetId()) &&
-			    !configuration.limitDownloadsToSets.contains(set.getSetTitle()))
+					!configuration.limitDownloadsToSets.contains(set.getSetTitle()))
 				continue;
 
 			File setDir = set.getSetDirectory();
