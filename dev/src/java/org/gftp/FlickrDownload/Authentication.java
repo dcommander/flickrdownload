@@ -1,5 +1,6 @@
 /*
   FlickrDownload - Copyright(C) 2010 Brian Masney <masneyb@onstation.org>.
+                 - Copyright(C) 2019 D. R. Commander.
   If you have any questions, comments, or suggestions about this program, please
   feel free to email them to me. You can always find out the latest news about
   FlickrDownload from my website at http://www.onstation.org/flickrdownload/
@@ -33,8 +34,8 @@ import com.flickr4java.flickr.auth.Permission;
 import com.flickr4java.flickr.util.AuthStore;
 import com.flickr4java.flickr.util.FileAuthStore;
 
-import org.scribe.model.Token;
-import org.scribe.model.Verifier;
+import com.github.scribejava.core.model.OAuth1RequestToken;
+import com.github.scribejava.core.model.OAuth1Token;
 
 public class Authentication {
 	public static Flickr getFlickr() throws ParserConfigurationException {
@@ -50,9 +51,10 @@ public class Authentication {
 		}
 
 		AuthInterface authInterface = flickr.getAuthInterface();
-		Token accessToken = authInterface.getRequestToken();
+		OAuth1RequestToken requestToken = authInterface.getRequestToken();
 
-		String url = authInterface.getAuthorizationUrl(accessToken, Permission.READ);
+		String url =
+			authInterface.getAuthorizationUrl(requestToken, Permission.READ);
 		System.out.println("Please visit the following URL to get your authorization token:");
 		System.out.println();
 		System.out.println(url);
@@ -60,9 +62,10 @@ public class Authentication {
 		System.out.print("Enter your token: ");
 		String tokenKey = new Scanner(System.in).nextLine();
 
-		Token requestToken = authInterface.getAccessToken(accessToken, new Verifier(tokenKey));
+		OAuth1Token accessToken =
+			authInterface.getAccessToken(requestToken, tokenKey);
 
-		auth = authInterface.checkToken(requestToken);
+		auth = authInterface.checkToken(accessToken);
 		RequestContext.getRequestContext().setAuth(auth);
 		authStore.store(auth);
 		return auth;
@@ -92,10 +95,10 @@ public class Authentication {
 		}
 
 		@Override
-		public Response post(String path, Map<String, Object> parameters, String apiKey, String sharedSecret, boolean multipart) {
+		public Response post(String path, Map<String, Object> parameters, String apiKey, String sharedSecret) {
 			while (true) {
 				try {
-					return super.post(path, parameters, apiKey, sharedSecret, multipart);
+					return super.post(path, parameters, apiKey, sharedSecret);
 				}
 				catch (Exception e) {
 					Logger.getLogger(getClass()).warn(String.format("Post operation failed, retrying: %s", e.getMessage()), e);

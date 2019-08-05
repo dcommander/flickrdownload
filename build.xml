@@ -11,16 +11,19 @@
 
     <path id="FlickrDownload.classpath">
         <pathelement location="build/bin"/>
-        <pathelement location="dev/lib/args4j-2.0.10.jar"/>
-        <pathelement location="dev/lib/commons-codec-1.3.jar"/>
+        <pathelement location="dev/lib/args4j-2.0.16.jar"/>
+        <pathelement location="dev/lib/commons-codec-1.13.jar"/>
         <pathelement location="dev/lib/commons-httpclient-3.1.jar"/>
-        <pathelement location="dev/lib/commons-lang-2.3.jar"/>
-        <pathelement location="dev/lib/commons-logging-1.1.1.jar"/>
-        <pathelement location="dev/lib/flickr4java-2.16.jar"/>
-        <pathelement location="dev/lib/jdom-1.1.jar"/>
-        <pathelement location="dev/lib/log4j-1.2.8.jar"/>
+        <pathelement location="dev/lib/commons-lang-2.6.jar"/>
+        <pathelement location="dev/lib/commons-logging-1.2.jar"/>
+        <pathelement location="dev/lib/flickr4java-3.0.1.jar"/>
+        <pathelement location="dev/lib/jdom-1.1.3.jar"/>
+        <pathelement location="dev/lib/log4j-1.2.17.jar"/>
         <pathelement location="dev/lib/saxon9he.jar"/>
-        <pathelement location="dev/lib/scribe-1.3.5.jar"/>
+        <pathelement location="dev/lib/scribejava-apis-6.4.1.jar"/>
+        <pathelement location="dev/lib/scribejava-core-6.4.1.jar"/>
+        <pathelement location="dev/lib/slf4j-api-1.7.26.jar"/>
+        <pathelement location="dev/lib/slf4j-log4j12-1.7.26.jar"/>
     </path>
 
     <presetdef name="javac">
@@ -77,12 +80,12 @@
 
             <manifest>
                 <attribute name="Built-By" value="${user.name}"/>
-                <attribute name="Built-Date" value="${TODAY}"/>        
+                <attribute name="Built-Date" value="${TODAY}"/>
                 <attribute name="Implementation-Title" value="${title}"/>
                 <attribute name="Implementation-Vendor" value="${vendor}"/>
-                <attribute name="Implementation-Version" value="${version}"/> 
+                <attribute name="Implementation-Version" value="${version}"/>
                 <attribute name="Main-Class" value="org.gftp.FlickrDownload.FlickrDownload"/>
-                <attribute name="Class-Path" value="args4j-2.0.10.jar commons-codec-1.3.jar commons-httpclient-3.1.jar commons-lang-2.3.jar commons-logging-1.1.1.jar flickr4java-2.16.jar jdom-1.1.jar log4j-1.2.8.jar saxon9he.jar scribe-1.3.5.jar"/>
+                <attribute name="Class-Path" value="args4j-2.0.16.jar commons-codec-1.13.jar commons-httpclient-3.1.jar commons-lang-2.6.jar commons-logging-1.2.jar flickr4java-3.0.1.jar jdom-1.1.3.jar log4j-1.2.17.jar saxon9he.jar scribejava-apis-6.4.1.jar scribejava-core-6.4.1.jar slf4j-api-1.7.26.jar slf4j-log4j12-1.7.26.jar"/>
             </manifest>
         </jar>
 
