@@ -1,6 +1,6 @@
 /*
   FlickrDownload - Copyright(C) 2010 Brian Masney <masneyb@onstation.org>.
-                 - Copyright(C) 2015, 2017 D. R. Commander.
+                 - Copyright(C) 2015, 2017, 2019 D. R. Commander.
   If you have any questions, comments, or suggestions about this program, please
   feel free to email them to me. You can always find out the latest news about
   FlickrDownload from my website at http://www.onstation.org/flickrdownload/
@@ -59,7 +59,7 @@ public class IOUtils {
 			return "";
 		}
 	}
-	
+
 
 	public static void copyToFileAndCloseStreams(InputStream istr, File destFile) throws IOException {
 		OutputStream ostr = null;
@@ -100,22 +100,35 @@ public class IOUtils {
 
 	public static void downloadUrl(String url, File destFile) throws IOException, HTTPException {
 		File tmpFile = new File(destFile.getAbsoluteFile() + ".tmp");
-		Logger.getLogger(IOUtils.class).debug(String.format("Downloading URL %s to %s", url, tmpFile));
 
 		tmpFile.getParentFile().mkdirs();
 
-        HttpClient client = new HttpClient();
-        GetMethod get = new GetMethod(url);
-        get.getParams().setCookiePolicy(CookiePolicy.IGNORE_COOKIES);
-        int code = client.executeMethod(get);
-        if (code >= 200 && code < 300) {
-        	copyToFileAndCloseStreams(get.getResponseBodyAsStream(), tmpFile);
-            tmpFile.renameTo(destFile);
-        }
-        else {
-        	Logger.getLogger(IOUtils.class).fatal("Got HTTP response code " + code + " when trying to download " + url);
-        	throw new HTTPException(code);
-        }
+		HttpClient client = new HttpClient();
+		while (true) {
+			int code;
+			Logger.getLogger(IOUtils.class).debug(String.format("Downloading URL %s to %s", url, tmpFile));
+			GetMethod get = new GetMethod(url);
+			get.getParams().setCookiePolicy(CookiePolicy.IGNORE_COOKIES);
+			try {
+				code = client.executeMethod(get);
+			} catch (java.net.UnknownHostException e) {
+				if (url.contains("farm0.static.flickr.com")) {
+					url = url.replaceAll("farm0.static.flickr.com",
+					                     "farm1.static.flickr.com");
+					continue;
+				}
+				throw e;
+			}
+			if (code >= 200 && code < 300) {
+				copyToFileAndCloseStreams(get.getResponseBodyAsStream(), tmpFile);
+				tmpFile.renameTo(destFile);
+				break;
+			}
+			else {
+				Logger.getLogger(IOUtils.class).fatal("Got HTTP response code " + code + " when trying to download " + url);
+				throw new HTTPException(code);
+			}
+		}
 	}
 
 	private static String getRemoteFilename(String url) throws IOException, HTTPException {
@@ -123,7 +136,7 @@ public class IOUtils {
         HeadMethod get = new HeadMethod(url);
         get.getParams().setCookiePolicy(CookiePolicy.IGNORE_COOKIES);
         int code = client.executeMethod(get);
-        
+
         if (code >= 200 && code < 400) {
             Header disposition = get.getResponseHeader("Content-Disposition");
             if (disposition != null)
@@ -139,7 +152,7 @@ public class IOUtils {
 			return "mp4"; // FIXME
 		return filename.substring(filename.lastIndexOf(".") + 1);
 	}
-	
+
 	public static void findFilesThatDoNotBelong(File setDir, Collection<String> expectedFiles, String addExtensionToUnknownFiles) {
 		for (String file : setDir.list()) {
 			if (expectedFiles.contains(file))
