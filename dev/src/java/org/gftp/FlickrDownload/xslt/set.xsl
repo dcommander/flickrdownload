@@ -39,7 +39,7 @@
               <a title="{media[primary='1']/title}" href="{$filename}">
                 <img class="thumbnail_photo" src="{media[primary='1']/image[@type='Medium']/@localFilename}" width="100%"/>
               </a>
-    
+
               <xsl:if test="description != ''">
                 <div class="set_description"><xsl:value-of select="description" disable-output-escaping="yes"/></div>
               </xsl:if>
@@ -181,6 +181,10 @@
               <div class="notes">This photo has notes. Move your mouse over the photo to see them.</div>
             </xsl:if>
 
+            <xsl:if test="media[$pos + 0]/@type='video'">
+              <div class="notes">This is a video. Click on the image to play it.</div>
+            </xsl:if>
+
             <div class="download_links">
               <div class="download_links_header">Download</div>
               <xsl:for-each select="media[$pos + 0]/image[@localFilename != '']">
@@ -207,7 +211,7 @@
             <xsl:if test="media[$pos + 0]/tags/tag">
               <div class="tags">
                 <div class="tags_header">Tags</div>
-  
+
                 <xsl:for-each select="media[$pos + 0]/tags/tag">
                   <xsl:sort select="@value"/>
 
@@ -221,14 +225,14 @@
             <xsl:if test="media[$pos + 0]/exif/exif">
               <div class="exif_tags">
                 <div class="exif_tags_header">EXIF Tags</div>
-  
+
                 <xsl:for-each select="media[$pos + 0]/exif/exif">
                   <xsl:sort select="@label"/>
-  
+
                   <div class="exif_tag">
                     <xsl:value-of select="@label"/>
                     <xsl:text>: </xsl:text>
-  
+
                     <xsl:choose>
                       <xsl:when test="@clean != ''">
                         <xsl:value-of select="@clean"/>

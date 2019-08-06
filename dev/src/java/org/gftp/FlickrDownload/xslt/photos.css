@@ -35,6 +35,7 @@ word-wrap: break-word; /* IE */
 }
 div.notes {
 padding-top: 10px;
+font-weight: bold;
 }
 img.set_thumb_photo {
 display: block;
@@ -176,14 +177,14 @@ padding-right: 1ex;
 table.stats_table td.num_photos_col, table.stats_table td.storage_used_col, table.stats_table td.commulative_storage_used_col, table.stats_table td.value {
 text-align: right;
 }
-.odd { 
+.odd {
 background: #ffffff;
 }
-.even { 
-background: #eeeeee; 
+.even {
+background: #eeeeee;
 }
-.title { 
-background: #cccccc; 
+.title {
+background: #cccccc;
 }
 .total {
 font-weight: bold;
